@@ -1,0 +1,48 @@
+			dfs(0,-1);
+      for(int k=1;k<maxL;k++) {
+				for(int i=0;i<n;i++) {
+					int jumpNode=jump[k-1][i];
+					jump[k][i]=jump[k-1][jumpNode];
+				}
+			}
+      
+      static int[] depth,tin,tout;
+	static int[][] jump;
+	static ArrayList<ArrayList<Integer>> graph;
+	static int n,maxL=18,index=0;
+	static int getLCA(int u,int v) {
+		if(depth[v]>depth[u]) {
+			u^=v;
+			v^=u;
+			u^=v;
+		}
+
+		for(int i=maxL-1;i>=0;i--) {
+			int to=jump[i][u];
+			if(depth[to]>=depth[v]) u=to;
+		}
+
+		if(u==v) return v;
+
+		for(int i=maxL-1;i>=0;i--) {
+			int newU=jump[i][u],newV=jump[i][v];
+			if(newU!=newV) {
+				u=newU;
+				v=newV;
+			}
+		} return jump[0][u];
+	}
+	static void dfs(int u,int p) {
+		tin[u]=index++;
+		ArrayList<Integer> neigh=graph.get(u);
+		for(int i=0;i<neigh.size();i++) {
+			int v=neigh.get(i);
+			if(v==p) continue;
+
+			jump[0][v]=u;
+			depth[v]=1+depth[u];
+
+			dfs(v,u);
+		}
+		tout[u]=index++;
+	}
