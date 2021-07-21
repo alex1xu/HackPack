@@ -1,0 +1,25 @@
+class DSU {
+	public int n;
+	public int[] parent;
+
+	public DSU(int myn) {
+		n=myn;
+		parent=new int[n];
+		for(int i=0;i<n;i++)
+			parent[i]=i;
+	}
+
+	public int find(int u) {
+		if(parent[u]==u) return u;
+		return parent[u]=find(parent[u]);
+	}
+
+	public boolean union(int u,int v) {
+		int r1=find(u), r2=find(v);
+
+		if(r1==r2) return false;
+
+		parent[r2]=r1;
+		return true;
+	}
+}
