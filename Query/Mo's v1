@@ -1,0 +1,36 @@
+class Query implements Comparable<Query> {
+	Integer l,r,x,block,ori;
+	static int n;
+	Query(int l,int r,int i) {
+		this.l=l;
+		this.r=r;
+		this.block=l/(int)Math.sqrt(n);
+		this.ori=i;
+	}
+	public int compareTo(Query other) {
+		if(this.block>other.block) return 1;
+		else if(this.block<other.block) return -1;
+		else return this.r.compareTo(other.r);
+	}
+}
+
+Query.n=n;
+Arrays.sort(list);
+
+int l=0,r=-1,i=0;
+			while(i<q) {
+				int tl=list[i].l,tr=list[i].r;
+				while(r<tr) {
+          ++r;
+          
+				} while(r>tr) {
+        
+          r--;
+				} while(l<tl) {
+					
+          l++;
+				} while(l>tl) {
+          --l;
+          
+        }
+			}
