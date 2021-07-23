@@ -1,0 +1,57 @@
+	static int[] parent,depth,heavy,head,pos;
+	static int cur_pos;
+
+	static int dfs(int v,ArrayList<ArrayList<Integer>> graph) {
+		int size=1,max_c_size=0;
+		for(int c:graph.get(v)) {
+			if(c!=parent[v]) {
+				parent[c]=v;
+				depth[c]=depth[v]+1;
+				int c_size=dfs(c,graph);
+				size+=c_size;
+				if(c_size>max_c_size) {
+					max_c_size=c_size;
+					heavy[v]=c;
+				}
+			}
+		} return size;
+	}
+
+	static void decompose(int v,int h,ArrayList<ArrayList<Integer>> graph) {
+		head[v]=h;
+		pos[v]=cur_pos++;
+		if(heavy[v]!=-1) decompose(heavy[v],h,graph);
+		for(int c:graph.get(v)) if(c!=parent[v]&&c!=heavy[v]) decompose(c,c,graph);
+	}
+
+	static void init(ArrayList<ArrayList<Integer>> graph) {
+		int n=graph.size();
+		parent=new int[n];
+		depth=new int[n];
+		heavy=new int[n];
+		for(int i=0;i<n;i++) heavy[i]=-1;
+		head=new int[n];
+		pos=new int[n];
+		cur_pos=0;
+
+		dfs(0,graph);
+		decompose(0,0,graph);
+	}
+
+	static long query(int a,int b) {
+		long res=0;
+		for(;head[a]!=head[b];b=parent[head[b]]) {
+			if(depth[head[a]]>depth[head[b]]) {
+				a^=b;
+				b^=a;
+				a^=b;
+			} long cur_heavy_path_max=tree.query(pos[head[b]],pos[b]);
+			res=Math.max(res,cur_heavy_path_max);
+		} if(depth[a]>depth[b]) {
+			a^=b;
+			b^=a;
+			a^=b;
+		} long last_heavy_path_max=tree.query(pos[a],pos[b]);
+		res=Math.max(res,last_heavy_path_max);
+		return res;
+	}
