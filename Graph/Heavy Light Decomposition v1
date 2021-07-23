@@ -1,0 +1,57 @@
+//MAIN METHOD
+hldArray=new ArrayList<>();
+			subsize=new int[n];
+			nodePos=new int[n];
+			chainID=new int[n];
+			chainHead=new int[n];
+			chainDepth=new int[n];
+			par=new int[n];
+			graph=new ArrayList<>();
+			for(int i=0;i<n;i++) graph.add(new ArrayList<>());
+			for(int i=1;i<n;i++) {
+				int a=scan.nextInt()-1,b=scan.nextInt()-1;
+				graph.get(a).add(b);
+				graph.get(b).add(a);
+			}
+      //CALL
+			dfs1(0,-1);
+			hldfs(0);
+      
+      
+
+static int[] subsize,nodePos,chainID,chainHead,chainDepth,par;
+	static int curChain=0,n;
+	static ArrayList<Integer> hldArray;
+	static ArrayList<ArrayList<Integer>> graph;
+	static void dfs1(int u,int p) {
+		subsize[u]=1;
+		for(int v:graph.get(u)) {
+			if(v!=p) {
+				par[v]=u;
+				dfs1(v,u);
+				subsize[u]+=subsize[v];
+			}
+		}
+	}
+
+	static void hldfs(int u) {
+		nodePos[u]=hldArray.size();
+		chainID[u]=curChain;
+		hldArray.add(u);
+		int bestKid=-1; //kid with biggest subtree
+		for(int i=0;i<graph.get(u).size();i++) {
+			int v=graph.get(u).get(i);
+			if(v==par[u]) continue;
+			if(bestKid==-1||subsize[bestKid]<subsize[v]) bestKid=v;
+		}//dfs down that kid first (draw the heavy path)
+		if(bestKid!=-1) hldfs(bestKid);
+		//now dfs down everyone else and make their paths
+		int chainNow=curChain;
+		for(int v:graph.get(u)) {
+			if(v==par[u]||v==bestKid) continue;
+			curChain++; //make a new chain and v is the head of the new chain
+			chainDepth[curChain]=chainDepth[chainNow]+1;
+			chainHead[curChain]=v;
+			hldfs(v);
+		}
+	}
