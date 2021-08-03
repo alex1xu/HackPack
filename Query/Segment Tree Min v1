@@ -1,0 +1,45 @@
+class Node {
+	int l,r,min,lazy,mid;
+	Node left,right;
+	Node(int l,int r) {
+		this.l=l;
+		this.r=r;
+		this.min=0;
+		this.lazy=0;
+		this.mid=(l+r)/2;
+
+		if(l!=r) {
+			left=new Node(l,mid);
+			right=new Node(mid+1,r);
+		}
+	}
+	void prop() {
+		if(left!=null) {
+			left.min+=lazy;
+			left.lazy+=lazy;
+		} if(right!=null) {
+			right.min+=lazy;
+			right.lazy+=lazy;
+		} lazy=0;
+	}
+	void add(int l,int r,int value) {
+		if(this.r<l||this.l>r) return;
+		if(l<=this.l&&r>=this.r) {
+			min+=value;
+			lazy+=value;
+			return;
+		}
+
+		prop();
+		left.add(l,r,value);
+		right.add(l,r,value);
+		min=Math.min(left.min,right.min);
+	}
+	int query(int l,int r) {
+		if(this.r<l||this.l>r) return Integer.MAX_VALUE;
+		if(l<=this.l&&r>=this.r) return min;
+
+		prop();
+		return Math.min(left.query(l,r),right.query(l,r));
+	}
+}
