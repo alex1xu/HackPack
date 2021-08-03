@@ -22,7 +22,7 @@ class Node {
 			right.lazy+=lazy;
 		} lazy=0;
 	}
-	void add(int l,int r,int value) {
+	void update(int l,int r,int value) {
 		if(this.r<l||this.l>r) return;
 		if(l<=this.l&&r>=this.r) {
 			max+=value;
@@ -31,8 +31,8 @@ class Node {
 		}
 
 		prop();
-		left.add(l,r,value);
-		right.add(l,r,value);
+		left.update(l,r,value);
+		right.update(l,r,value);
 		max=Math.max(left.max,right.max);
 	}
 	int query(int l,int r) {
