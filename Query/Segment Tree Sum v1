@@ -1,0 +1,47 @@
+class Node {
+	int l,r,mid;
+	long sum,lazy,width;
+	Node left,right;
+	Node(int l,int r) {
+		this.l=l;
+		this.r=r;
+		this.sum=0;
+		this.lazy=0;
+		this.mid=(l+r)/2;
+		this.width=r-l+1;
+
+		if(l!=r) {
+			left=new Node(l,mid);
+			right=new Node(mid+1,r);
+		}
+	}
+	void prop() {
+		if(left!=null) {
+			left.sum+=lazy*left.width;
+			left.lazy+=lazy;
+		} if(right!=null) {
+			right.sum+=lazy*right.width;
+			right.lazy+=lazy;
+		} lazy=0;
+	}
+	void update(int l,int r,long value) {
+		if(this.r<l||this.l>r) return;
+		if(l<=this.l&&r>=this.r) {
+			sum+=value*width;
+			lazy+=value;
+			return;
+		}
+
+		prop();
+		left.update(l,r,value);
+		right.update(l,r,value);
+		sum=left.sum+right.sum;
+	}
+	long query(int l,int r) {
+		if(this.r<l||this.l>r) return 0;
+		if(l<=this.l&&r>=this.r) return sum;
+
+		prop();
+		return left.query(l,r)+right.query(l,r);
+	}
+}
